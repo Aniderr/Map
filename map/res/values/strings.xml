@@ -13,5 +13,6 @@
 	<string name="normal">普通模式</string>
 	<string name="follow">跟随模式</string>
 	<string name="compass">罗盘模式</string>
+	<string name="start">开启</string>
     
 </resources>
