@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">map</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+	<string name="sate">卫星图</string>
+	<string name="traffic">交通流量图</string>
+	<string name="common">普通图</string>
+	<string name="open_traffic">开启交通流量图</string>
+	<string name="close_traffic">关闭交通流量图</string>
+	<string name="myLocation">我的位置</string>
+	<string name="normal">普通模式</string>
+	<string name="follow">跟随模式</string>
+	<string name="compass">罗盘模式</string>
+    
+</resources>

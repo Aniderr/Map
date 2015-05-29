@@ -1,0 +1,39 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/common"
+        android:showAsAction="never"
+        android:title="@string/common"/>
+    
+    <item
+        android:id="@+id/traffic"
+        android:showAsAction="never"
+        android:title="@string/traffic"/>
+    
+    <item
+        android:id="@+id/sate"
+        android:showAsAction="never"
+        android:title="@string/sate"/>
+    
+    <item
+        android:id="@+id/myLocation"
+        android:showAsAction="never"
+        android:title="@string/myLocation"/>
+    
+    <item
+        android:id="@+id/normal"
+        android:showAsAction="never"
+        android:title="@string/normal"/>
+    
+    <item
+        android:id="@+id/follow"
+        android:showAsAction="never"
+        android:title="@string/follow"/>
+    
+    <item
+        android:id="@+id/compass"
+        android:showAsAction="never"
+        android:title="@string/compass"/>
+    
+	
+</menu>
