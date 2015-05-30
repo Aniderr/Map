@@ -1,11 +1,19 @@
 package com.jackie.map;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -14,16 +22,25 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
+import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
+import com.baidu.mapapi.map.InfoWindow.OnInfoWindowClickListener;
+import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.jackie.map.MyOrientationListener.OnOrientationListener;
+import com.jackie.map.bean.info;
 
 /**
  * 地图详情信息页面
@@ -57,7 +74,12 @@ public class MapInfoActivity extends Activity{
 	
 	//切换模式变量
 	private LocationMode locationModel;
-		
+	
+	
+	//增加覆盖物图标
+	private BitmapDescriptor mMarker;
+	private RelativeLayout mMarkerLy;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,6 +97,82 @@ public class MapInfoActivity extends Activity{
 	
 		//初始化定位
 		initLocation();
+		
+		//初始化覆盖物相关
+		initMarker();
+		
+		
+		baiduMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+			
+			@Override
+			public boolean onMarkerClick(Marker marker) {
+				
+				Bundle extraInfo = marker.getExtraInfo();
+				info info = (info) extraInfo.getSerializable("info");
+				ImageView iv = (ImageView) mMarkerLy
+						.findViewById(R.id.id_info_img);
+				TextView distance = (TextView) mMarkerLy
+						.findViewById(R.id.id_info_distance);
+				TextView name = (TextView) mMarkerLy
+						.findViewById(R.id.id_info_name);
+				TextView zan = (TextView) mMarkerLy
+						.findViewById(R.id.id_info_zan);
+				iv.setImageResource(info.getImgId());
+				distance.setText(info.getDistance());
+				name.setText(info.getName());
+				zan.setText(info.getZan() + "");
+				
+				InfoWindow infoWindow;
+				TextView tv = new TextView(context);
+				tv.setBackgroundResource(R.drawable.location_tips);
+				tv.setPadding(30, 20, 30, 50);
+				tv.setText(info.getName());
+				tv.setTextColor(Color.parseColor("#ffffff"));
+
+				final LatLng latLng = marker.getPosition();
+				Point p = baiduMap.getProjection().toScreenLocation(latLng);
+				p.y -= 47;
+				LatLng ll = baiduMap.getProjection().fromScreenLocation(p);
+
+				infoWindow = new InfoWindow((View)tv, ll, 1);
+				
+				baiduMap.showInfoWindow(infoWindow);
+				mMarkerLy.setVisibility(View.VISIBLE);
+				
+				
+				mMarkerLy.setVisibility(View.VISIBLE);
+				
+				return true;
+			}
+		});
+		
+		baiduMap.setOnMapClickListener(new OnMapClickListener()
+		{
+
+			@Override
+			public boolean onMapPoiClick(MapPoi arg0)
+			{
+				return false;
+			}
+
+			@Override
+			public void onMapClick(LatLng arg0)
+			{
+				mMarkerLy.setVisibility(View.GONE);
+				
+				baiduMap.hideInfoWindow();
+				
+			}
+		});
+	}
+	
+	private void initMarker() {
+		
+		mMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+		
+		mMarkerLy = (RelativeLayout) findViewById(R.id.id_maker_ly);
+		
+		
 	}
 
 	//初始化定位
@@ -125,6 +223,7 @@ public class MapInfoActivity extends Activity{
 		 
 		 MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.zoomTo(15.0f);
 		 baiduMap.setMapStatus(mapStatusUpdate);
+		 
 	}
 
 
@@ -270,11 +369,47 @@ public class MapInfoActivity extends Activity{
 			
 			locationModel = LocationMode.COMPASS;
 			break;
+			
+		case R.id.addOverlay:
+			
+			addOverlays(info.infos);
 		}
+		
+		mMarkerLy.setVisibility(View.GONE);
+		
 		return super.onOptionsItemSelected(item);
 	}
 
 	
+	/**
+	 * 添加覆盖物
+	 * 
+	 * @param infos
+	 */
+	private void addOverlays(List<info> infos)
+	{
+		baiduMap.clear();
+		LatLng latLng = null;
+		Marker marker = null;
+		OverlayOptions options;
+		for (info info : infos)
+		{
+			// 经纬度
+			latLng = new LatLng(info.getLatitude(), info.getLongitude());
+			// 图标
+			options = new MarkerOptions().position(latLng).icon(mMarker)
+					.zIndex(5);
+			marker = (Marker) baiduMap.addOverlay(options);
+			Bundle arg0 = new Bundle();
+			arg0.putSerializable("info", info);
+			marker.setExtraInfo(arg0);
+		}
+
+		MapStatusUpdate msu = MapStatusUpdateFactory.newLatLng(latLng);
+		baiduMap.setMapStatus(msu);
+
+	}
+
 	/**
 	 * 定位
 	 */
@@ -284,4 +419,5 @@ public class MapInfoActivity extends Activity{
 		
 		baiduMap.animateMapStatus(msu);
 	}
+	
 }

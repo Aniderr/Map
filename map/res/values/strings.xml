@@ -14,5 +14,6 @@
 	<string name="follow">跟随模式</string>
 	<string name="compass">罗盘模式</string>
 	<string name="start">开启</string>
+	<string name="addOverlay">增加覆盖物</string>
     
 </resources>
