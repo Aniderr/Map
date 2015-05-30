@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
    
    <Button 
        android:id="@+id/start"
@@ -9,4 +10,32 @@
        android:layout_height="wrap_content"
        android:text="@string/start"/>
    
+   <LinearLayout 
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal">
+       
+       <EditText 
+	      android:id="@+id/id_city"
+	      android:layout_width="fill_parent"
+	      android:layout_height="fill_parent"
+	      android:layout_weight="1"
+	      android:background="@drawable/base_map_border"/>
+       
+       <EditText 
+	      android:id="@+id/id_key"
+	      android:layout_width="fill_parent"
+	      android:layout_height="fill_parent"
+	      android:layout_weight="1"
+	      android:background="@drawable/base_map_border"/>
+       
+       <Button 
+           android:id="@+id/search"
+           android:layout_width="fill_parent"
+           android:layout_height="fill_parent"
+           android:layout_weight="1"
+           android:text="@string/geoCode_search"/>
+       
+       
+   </LinearLayout>
 </LinearLayout>

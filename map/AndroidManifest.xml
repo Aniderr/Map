@@ -28,6 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.jackie.map.MapInfoActivity"></activity>
+        <activity android:name="com.jackie.map.BaseMapActivity"></activity>
         
         <service
             android:name="com.baidu.location.f"

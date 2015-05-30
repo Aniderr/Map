@@ -15,5 +15,7 @@
 	<string name="compass">罗盘模式</string>
 	<string name="start">开启</string>
 	<string name="addOverlay">增加覆盖物</string>
+	
+	<string name="geoCode_search">地理编码搜索</string>
     
 </resources>
